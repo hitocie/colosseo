@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  title: MyString
+  date: 2012-07-10
+  user: 
+  description: MyText
+  type: 
+  result: MyText
+  status: 
+
+two:
+  title: MyString
+  date: 2012-07-10
+  user: 
+  description: MyText
+  type: 
+  result: MyText
+  status: 
