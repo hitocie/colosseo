@@ -5,7 +5,7 @@ class CreateBattles < ActiveRecord::Migration
       t.date :date
       t.references :user
       t.text :description
-      t.integer :type
+      t.integer :kind
       t.text :result
       t.integer :status
 

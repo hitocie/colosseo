@@ -1,4 +1,4 @@
-＜データベース＞
+--- データベース ---
 ■User テーブル
  [pk] id:int
  - uid:text (from Facebook)
@@ -11,7 +11,7 @@
  - date:date
  - owner:int  [ = user-id ]
  - description:text
- - type:int [0:トーナメント, 1:リーグ戦, ...]
+ - kind:int [0:トーナメント, 1:リーグ戦, ...]
  - result:text  *注意（下記参照）
  - status:int [10:開催中, 90:終了 ]
 
@@ -20,38 +20,73 @@
  [pk] user-id
 
 
-※注意　Battle.result
+[[注意]]　Battle.result
 　JSONで各種typeによってフォーマットが可変。
 　それぞれに自由なフォーマットのJSONを送ってもらえれば、
 　データベースにそれをそのまま格納します。
 　（福井さんか菅原君にフォーマットはお任せ！）
 
 
+--- APIs ---
+＜DTO＞
+*User
+ -id
+ -uid
+ -name
+
+*Battle
+ -id
+ -title
+ -date
+ -description
+ -kind
+ -result
+ -status
+ -owner (= User)
+ -participants (= User[])
+
+*BattleKind (enum)
+ [0:トーナメント, 1:リーグ戦, ...]
+
+*BattleStatus (enum)
+ [10:開催中, 90:終了 ]
+
 ＜サービス＞
-- User[] get-my-friends();
-   自分の友達をすべて取得。
-- Battle[] find-my-battles(/* 条件は要検討 */);
-　自分の参加予定のBattleを検索。（ただし、一覧用のため、Battleの項目(id, title, status)のみ取得。）
-- Battle get-my-battle( battle-id:int );
-　Battleの詳細を取得。（全項目。）
-- Battle create-new-battle( title, date, description, type, [user-id,
-user-id, ...] );
-　Battleの新規作成。（戻り値には、idが新規に割り振られ戻ってくる。）
-- void update-result-of-battle( battle-id:int,result:text );
+- void get_my_friends( callback(User[]) );
+   自分の友達をすべて取得。※非同期
+
+- void find_my_battles( /* 条件は要検討 */, callback(Battle[]) );
+　自分の参加予定のBattleを検索。（ただし、一覧用のため、Battleの項目(id, title, status)のみ取得。）※非同期
+
+- void get_my_battle( battle-id, callback(Battle) );
+　Battleの詳細を取得。（全項目。）※非同期
+
+- Battle create_new_battle( title, date, description, kind, result, status, participants);
+　Battleの新規作成。（戻り値には、idが新規に割り振られ戻ってくる。participantsはUserの配列。）
+
+- void update_result_of_battle( battle-id, result );
 　結果の更新。
 
+[[注意]] See the public/test/index.html.
 
--------------------------------------------------------
+
+--- How To Setup(岡田めも) ---
 # Create Database
 CREATE DATABASE colosseo_dev DEFAULT CHARACTER SET utf8;
-# - Edit config/database.yml -
+## - Edit config/database.yml -
 
 # Create model
 rails g model user uid:string name:string token:string
-rails g model battle title:string date:date user:references description:text type:integer result:text status:integer
+rails g model battle title:string date:date user:references description:text kind:integer result:text status:integer
 rails g model participant battle:references user:references
 rake db:migrate
+rake db:seed
 
 # Create controllers
 rails g controller users
 rails g controller battles
+
+# Coding (controllers, models and roots)
+
+# Startup Server
+rails s

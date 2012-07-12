@@ -16,8 +16,9 @@ ActiveRecord::Base.connection.execute('ALTER TABLE battles AUTO_INCREMENT = 1')
 ActiveRecord::Base.connection.execute('ALTER TABLE users AUTO_INCREMENT = 1')
 
 # create test data
-b1 = Battle.new(:title => 'battle-01', :status => 50)
-b1.save!
+User.create(
+  [{uid: '10001', name: 'Hitoshi Okada'}, 
+   {uid: '10002', name: 'Katsushi Fukui'},
+   {uid: '10003', name: 'Yohsuke Sugahara'}]
+)
 
-b2 = Battle.new(:title => 'battle-02', :status => 20)
-b2.save!

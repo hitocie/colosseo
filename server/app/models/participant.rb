@@ -1,5 +1,5 @@
 class Participant < ActiveRecord::Base
   belongs_to :battle
   belongs_to :user
-  # attr_accessible :title, :body
+  attr_accessible :user_id, :battle_id
 end

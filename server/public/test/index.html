@@ -1,0 +1,43 @@
+<html>
+<head>
+<script src='test/jquery.js'></script>
+<script src='test/services.js'></script>
+<script>
+function _users() {
+	get_my_friends(
+		function (friends) {
+			for (var i in friends) {
+				console.log('friend=' + JSON.stringify(friends[i]));
+			}
+		}
+	);
+}
+function _battles() {
+	create_new_battle(
+		'BATTLE-1',
+		'2012/01/01',
+		'This is a big event.',
+		BattleKind.tournament,
+		{a: 1, b: 2, c: 3},
+		BattleStatus.ongoing,
+		[{uid: '10003'}, {uid: '10002'}]
+	);
+	find_my_battles(
+		function (battles) {
+			for (var i in battles) {
+				get_my_battle(battles[i].id, function (b) {
+    				console.log('battle=' + JSON.stringify(b));
+ 					update_result_of_battle(b.id, {z: 1000, x: 2000});
+    		 	});
+			}
+		}
+	);
+}
+_users();
+_battles();
+</script>
+</head>
+<body>
+	<h1>Loaded!!</h1>
+</body>
+</html>

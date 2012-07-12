@@ -18,7 +18,7 @@ ActiveRecord::Schema.define(:version => 20120710135535) do
     t.date     "date"
     t.integer  "user_id"
     t.text     "description"
-    t.integer  "type"
+    t.integer  "kind"
     t.text     "result"
     t.integer  "status"
     t.datetime "created_at",  :null => false
