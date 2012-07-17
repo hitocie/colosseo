@@ -1,7 +1,7 @@
 /**
  * services.js
  */
-var root_url = '/api/v1/';
+var root_url = 'http://localhost:3000/api/v1/';
 
 // common
 function async_request(args) {
@@ -12,7 +12,7 @@ function async_request(args) {
 	var type = args.type;
 	if (type == undefined)
 		type = 'GET';
-
+	
 	$.ajax({
 		url: url,
 		data: data,
