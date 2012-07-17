@@ -13,7 +13,7 @@
  - description:text
  - kind:int [0:トーナメント, 1:リーグ戦, ...]
  - result:text  *注意（下記参照）
- - status:int [10:開催中, 90:終了 ]
+ - status:int [50:開催中, 90:終了 ]
 
 ■Participants テーブル
  [pk] battle-id
@@ -66,6 +66,9 @@
 
 - void update_result_of_battle( battle-id, result );
 　結果の更新。
+
+- void delete_battle( battle-id );
+ Battleの削除。（物理削除）＊論理削除にすべき？
 
 [[注意]] See the public/test/index.html.
 

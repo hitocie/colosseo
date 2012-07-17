@@ -1,6 +1,7 @@
 Colosseo::Application.routes.draw do
   
   scope "api/v1" do
+    resources :auths #get "auths/index"
     resources :users, :battles
   end
   

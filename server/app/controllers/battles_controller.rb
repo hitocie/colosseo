@@ -1,5 +1,8 @@
-class BattlesController < ApplicationController
+class BattlesController < ApiController
 
+  # FIXME: for test
+  skip_before_filter :authenticate
+  
   # index (GET)
   def index
     service = params[:service]
@@ -29,7 +32,7 @@ class BattlesController < ApplicationController
       ret = {
         :id => b.id,
         :title => b.title,
-        :date => b.date,
+        :date => date_to_string(b.date),
         :description => b.description,
         :kind => b.kind,
         :result => b.result,
@@ -52,6 +55,7 @@ class BattlesController < ApplicationController
     case service
     when "create_new_battle"
       b = params[:battle]
+      p b[:result]
       Battle.transaction do
         @battle = Battle.new(
           :title => b[:title], 
@@ -94,6 +98,23 @@ class BattlesController < ApplicationController
       end
       
     end
+    head :ok
+  end
+
+  # delete (DELETE)  
+  def destroy
+    @battle = Battle.find(params[:id])
+    #user_id = session[:user][:id]
+    #if @battle.user_id != user_id then
+    #  # Not own event.  
+    #  raise "You cannot delete this event!"
+    #end
+    
+    case params[:service]
+    when "delete_battle"
+      @battle.destroy
+    end
+
     head :ok
   end
 end

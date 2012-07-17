@@ -138,3 +138,10 @@ function update_result_of_battle(id, result) {
 		data: JSON.stringify({service: 'update_result_of_battle', battle: b})
 	});
 }
+function delete_battle(id) {
+	sync_request({
+		url: root_url + 'battles/' + id,
+		type: 'DELETE',
+		data: JSON.stringify({service: 'delete_battle'})
+	});
+}

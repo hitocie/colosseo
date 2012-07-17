@@ -38,3 +38,5 @@ gem 'jquery-rails'
 # gem 'debugger'
 
 gem 'mysql2'
+gem 'httpclient'
+gem 'koala' ## for Facebook
