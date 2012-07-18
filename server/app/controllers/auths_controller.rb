@@ -17,10 +17,10 @@ class AuthsController < ApiController
     end
   end
   
+
   def show
-    # is-login
     case params[:service]
-    when "is-login"
+    when "is_login"
       render :json => is_login
       
     when "logout"

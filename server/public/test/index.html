@@ -15,7 +15,7 @@ function _users() {
 function _battles() {
 	create_new_battle(
 		'BATTLE-1',
-		'2012/01/01',
+		'2012/02/02',
 		'This is a big event.',
 		BattleKind.tournament,
 		null, //{a: 1, b: 2, c: 3},
@@ -23,6 +23,7 @@ function _battles() {
 		[{uid: '10003'}, {uid: '10002'}]
 	);
 	find_my_battles(
+		{},
 		function (battles) {
 			for (var i in battles) {
 				get_my_battle(battles[i].id, function (b) {
@@ -33,6 +34,8 @@ function _battles() {
 		}
 	);
 }
+
+console.log('login?=' + is_login());
 _users();
 _battles();
 </script>

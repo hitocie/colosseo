@@ -65,10 +65,33 @@ function sync_request(args) {
 	return {};
 }
 
+// auths
+function is_login() {
+	return sync_request({
+		url: root_url + 'auths/0',
+		data: {service: 'is_login'}
+	});
+}
+function logout() {
+	return sync_request({
+		url: root_url + 'auths/0',
+		data: {service: 'logout'}
+	});
+}
+
 // users
+function get_me(p) {
+	async_request({
+		url: root_url + 'users/0',
+		data: {service: 'get_me'},
+		success_handler: function(data, status) {
+			p(data);
+		}
+	});
+}
 function get_my_friends(p) {
 	async_request({
-		url: root_url + 'users/1',
+		url: root_url + 'users/0',
 		data: {service: 'get_my_friends'},
 		success_handler: function(data, status) {
 			p(data);
@@ -86,10 +109,17 @@ var BattleStatus = {
 	ongoing: 50,
 	finished: 90
 };
-function find_my_battles(p) {
+function find_my_battles(conditions, p) {
+	var offset = 0;
+	if (conditions.offset != undefined)
+		offset = conditions.offset;
+	var limit = 10;
+	if (conditions.limit != undefined)
+		limit = conditions.limit;
+	
 	async_request({
 		url: root_url + 'battles',
-		data: {service: 'find_my_battles'},
+		data: {service: 'find_my_battles', offset: offset, limit: limit},
 		success_handler: function(data, status) {
 			p(data);
 		}

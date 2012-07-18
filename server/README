@@ -52,23 +52,30 @@
  [10:開催中, 90:終了 ]
 
 ＜サービス＞
-- void get_my_friends( callback(User[]) );
-   自分の友達をすべて取得。※非同期
+- boolean is_login(); 
+  ログインしているかどうか？
 
-- void find_my_battles( /* 条件は要検討 */, callback(Battle[]) );
-　自分の参加予定のBattleを検索。（ただし、一覧用のため、Battleの項目(id, title, status)のみ取得。）※非同期
+- void logout();
+  ログアウト。
+
+- void get_my_friends( callback(User[]) );
+  自分の友達をすべて取得。※非同期
+
+- void find_my_battles( {offset: 0, limit: 10}, callback(Battle[]) );
+  自分の参加予定のBattleを検索。（ただし、一覧用のため、Battleの項目(id, title, status)のみ取得。）※非同期
+　※第一引数は条件（offset, limit, その他要検討）
 
 - void get_my_battle( battle-id, callback(Battle) );
-　Battleの詳細を取得。（全項目。）※非同期
+  Battleの詳細を取得。（全項目。）※非同期
 
 - Battle create_new_battle( title, date, description, kind, result, status, participants);
-　Battleの新規作成。（戻り値には、idが新規に割り振られ戻ってくる。participantsはUserの配列。）
+  Battleの新規作成。（戻り値には、idが新規に割り振られ戻ってくる。participantsはUserの配列。）
 
 - void update_result_of_battle( battle-id, result );
-　結果の更新。
+  結果の更新。
 
 - void delete_battle( battle-id );
- Battleの削除。（物理削除）＊論理削除にすべき？
+  Battleの削除。（物理削除）＊論理削除にすべき？
 
 [[注意]] See the public/test/index.html.
 

@@ -8,7 +8,15 @@ class BattlesController < ApiController
     service = params[:service]
     case service
     when "find_my_battles"
-      @battles = Battle.find(:all)
+      conditions = ["battles.user_id = ? OR participants.user_id = ?", 1, 1] # FIXME
+      @battles = Battle.find(
+        :all,
+        :conditions => conditions,
+        :order => "date DESC",
+        :offset => params[:offset],
+        :limit => params[:limit],
+        :include => [:user, :participants]
+      )
       ret = @battles.collect do |b|
       {
         :id => b.id,
@@ -27,8 +35,19 @@ class BattlesController < ApiController
     service = params[:service]
     case service
     when "get_my_battle"
-      b = Battle.find(params[:id], :include => [:user, :participants])
+      b = Battle.find(
+        params[:id], 
+        :include => [:user, {:participants => [:user]}]
+      )
       owner = b.user
+      participants = 
+        b.participants.collect do |p|
+          {
+            :id => p.user.id,
+            :uid => p.user.uid,
+            :name => p.user.name
+          }
+        end
       ret = {
         :id => b.id,
         :title => b.title,
@@ -41,7 +60,8 @@ class BattlesController < ApiController
           :id => owner.id,
           :uid => owner.uid,
           :name => owner.name
-        }
+        },
+        :participants => participants
       }
       render :json => ret
       return
@@ -76,7 +96,7 @@ class BattlesController < ApiController
         end
         users = User.where(:uid => participants)
         for u in users do
-          participant = @battle.participants.build(:user_id => u, :battle_id => @battle.id)
+          participant = @battle.participants.build(:user_id => u.id, :battle_id => @battle.id)
           participant.save!
         end
       end
