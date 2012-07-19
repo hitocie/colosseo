@@ -1,0 +1,31 @@
+<html>
+<head> 
+    <title>Colosseo arrange participants</title> 
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<div data-role="page" id="arrange-participants-page">
+    <div data-role="header">
+        <a href="selectparticipants.html" data-role="button" data-icon="back" data-transition="slide" data-direction="reverse">戻る</a>
+		<h5>並べ替え</h5>
+        <a href="#" data-role="button" data-icon="refresh" id="arrange-participants-refresh">やり直す</a>
+	</div>
+    
+    <div data-role="content">
+        <a href="#" id="arrange-participants-btn" data-role="button">決定</a>
+                
+        <label for="arrange-participants-list">参加者：</label>
+        <ul data-role="listview" id="arrange-participants-list" name="arrange-participants-list" data-inset="true">
+        </ul>
+
+        <hr/>
+
+        <label for="arrange-result-list">順番：</label>
+        <ol data-role="listview" id="arrange-result-list" name="arrange-result-list" data-inset="true">
+        </ol>
+        
+    </div>
+</div>
+</body>
+</html>
