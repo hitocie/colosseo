@@ -7,11 +7,17 @@ var LAST_PARITCIPANTS_KEY = 'last_participants_key';
 *  Action of all parts.
 */
 $(function() {
+  /*
+   * Login.
+   */
   // login-btn
   $("#index-login-btn").live('click', function() {
                         _login();
                         });
   
+  /*
+   * Home.
+   */
   // before showing main page
   $(document).delegate("#main-page", 'pageinit', function() {
                        _show_battle_info_list();
@@ -27,6 +33,14 @@ $(function() {
                        _init_battle_result_page();
                        });
   
+  // input-result-btn
+  $("#input-result-btn").live('click', function() {
+                              // 
+                              });
+  
+  /*
+   * New.
+   */
   // before showing selectcompetitors page
   $(document).delegate("#select-participants-page", 'pageinit', function() {
                        _init_select_participants_page();
@@ -104,7 +118,7 @@ function _logout() {
 //
 function _show_battle_info_list() {
     // server api: find_my_battles
-    find_my_battles(function(battles) {
+    find_my_battles({}, function(battles) {
                     var b_list = battles;
                     
                     var row = '';
@@ -236,7 +250,7 @@ function _create_battle() {
 // show friends
 //
 function _init_select_participants_page() {
-    get_my_friends(function(friends) {                   
+    get_my_friends(function(friends) {          
                    var row = '<fieldset data-role="controlgroup">';
                    
                    for (var i=0; i<friends.length; i++) {

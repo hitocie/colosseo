@@ -39,6 +39,7 @@
 		AE6B295315AEF6E100ACABB6 /* MainViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = AE6B295215AEF6E100ACABB6 /* MainViewController.xib */; };
 		AE6B296315AEFFEB00ACABB6 /* www in Resources */ = {isa = PBXBuildFile; fileRef = AE6B296215AEFFEB00ACABB6 /* www */; };
 		AE822BEA15B0688500C615CE /* colosseo.js in Sources */ = {isa = PBXBuildFile; fileRef = AE822BE915B0688500C615CE /* colosseo.js */; };
+		AE8AAEA615B5A63100427DFA /* arrangeparticipants.html in Resources */ = {isa = PBXBuildFile; fileRef = AE8AAEA515B5A63100427DFA /* arrangeparticipants.html */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -81,6 +82,7 @@
 		AE6B295615AEF6E100ACABB6 /* verify.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = verify.sh; sourceTree = "<group>"; };
 		AE6B296215AEFFEB00ACABB6 /* www */ = {isa = PBXFileReference; lastKnownFileType = folder; path = www; sourceTree = "<group>"; };
 		AE822BE915B0688500C615CE /* colosseo.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = colosseo.js; path = www/js/colosseo.js; sourceTree = "<group>"; };
+		AE8AAEA515B5A63100427DFA /* arrangeparticipants.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = arrangeparticipants.html; path = www/arrangeparticipants.html; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -118,6 +120,7 @@
 		AE6B28F315AEF6E000ACABB6 = {
 			isa = PBXGroup;
 			children = (
+				AE8AAEA515B5A63100427DFA /* arrangeparticipants.html */,
 				AE822BE915B0688500C615CE /* colosseo.js */,
 				AE6B296215AEFFEB00ACABB6 /* www */,
 				AE6B291F15AEF6E000ACABB6 /* colosseo */,
@@ -334,6 +337,7 @@
 				AE6B294A15AEF6E100ACABB6 /* Cordova.plist in Resources */,
 				AE6B295315AEF6E100ACABB6 /* MainViewController.xib in Resources */,
 				AE6B296315AEFFEB00ACABB6 /* www in Resources */,
+				AE8AAEA615B5A63100427DFA /* arrangeparticipants.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -438,6 +442,7 @@
 					"$(inherited)",
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_THUMB_SUPPORT = NO;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
@@ -458,6 +463,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_THUMB_SUPPORT = NO;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
@@ -481,6 +487,7 @@
 					"DEBUG=1,",
 					"CORDOVA_FRAMEWORK=1",
 				);
+				GCC_THUMB_SUPPORT = NO;
 				INFOPLIST_FILE = "colosseo/colosseo-Info.plist";
 				OTHER_LDFLAGS = (
 					"-weak_framework",
@@ -510,6 +517,7 @@
 					"NDEBUG=1,",
 					"CORDOVA_FRAMEWORK=1",
 				);
+				GCC_THUMB_SUPPORT = NO;
 				INFOPLIST_FILE = "colosseo/colosseo-Info.plist";
 				OTHER_LDFLAGS = (
 					"-weak_framework",
