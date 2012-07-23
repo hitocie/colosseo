@@ -1,33 +1,27 @@
 
 var rootNode = allNodes[allNodes.length - 1][0];
-var treeHeight = rootNode.coordinates[1];
+var treeHeight = rootNode.y;
 
 var path = new CompoundPath();
 
-var inc = 0;
-function pp(node) {
-    var coordinates = node.coordinates,
-	children = node.children,
-	x = coordinates[0] + 50, y = (treeHeight - coordinates[1]) * 50;
-//    if (node.isLeaf) {
-	var circle = new Path.Circle(new Point(x, y), 10);
-	circle.fillColor = "blue";
-	circle.data = node;
-  //  }
+function drawPath( node ) {
+    var children = node.children,
+        x = node.x + 50, y = (treeHeight - node.y) * 50;
+
+    var circle = new Path.Circle(new Point(x, y), 10);
+    circle.fillColor = "blue";
+    circle.data = node;
+
     if ( children ) {
-	for (var i = 0; i < children.length; i++) {
-	    
-	    var child = children[i],
-		childCoordinates = child.coordinates,
-		childX = childCoordinates[0] + 50,
-		childY = (treeHeight - childCoordinates[1]) * 50;
-	    var p = new Path(new Point(x, y), new Point(childX, y), new Point(childX, childY));
-	    p.strokeColor = 'black';
-	    path.addChild(p);
-	    console.log(x + ":" + y + " -> " + childX + ":" + childY);
-	    pp(child);
-	}
-    }
+        children.forEach(function(child) {
+            var childX = child.x + 50,
+                childY = (treeHeight - child.y) * 50;
+            var p = new Path(new Point(x, y), new Point(childX, y), new Point(childX, childY));
+            p.strokeColor = 'black';
+            path.addChild(p);
+            drawPath(child);
+        });
+   }
 }
 
 var hitOptions = {
@@ -37,35 +31,42 @@ var hitOptions = {
     tolerance: 5
 };
 function onMouseDown(event) {
-    var res = paper.project.hitTest(event.point, hitOptions);
-    if (res && res.item) {
-	var data = res.item.data;
-	console.log(data);
-	if (data && data.children) {
-	    var go = true;
-	    for (var i = 0; i < data.children.length; i++) {
-		var c = data.children[i];
-		if (!c.isLeaf && !c.ok) {
-		    go = false;
-		    break;
-		}
-	    }
-	    if (go) {
-		var child;
-		if (confirm()) {
-		    child = data.children[0];
-		} else {
-		    child = data.children[1];
-		}
-		var x = data.coordinates[0] + 50, y = (treeHeight - data.coordinates[1]) * 50;
-		var cx = child.coordinates[0] + 50, cy = (treeHeight - child.coordinates[1]) * 50;
-		var p = new Path(new Point(x, y), new Point(cx, y), new Point(cx, cy));
-		p.strokeColor = "red";
-		data.ok = true;
-	    }
-	}
+    var hitResult = paper.project.hitTest(event.point, hitOptions),
+        data;
+    
+    function isClickable(children) {
+        var ok = true, i;
+        for (i = 0; i < children.length; i++) {
+            var c = data.children[i];
+            if (!c.isLeaf && !c.ok) {
+                ok = false;
+                break;
+            }
+        }
+        return ok;
     }
-    console.log(res);
+    
+    if (hitResult && hitResult.item) {
+        data = hitResult.item.data;
+        if (data && data.children) {
+            if ( isClickable(data.children) ) {
+                var child;
+                // if ( confirm() ) {
+                //     child = data.children[0];
+                // } else {
+                //     child = data.children[1];
+                // }
+                
+                $.mobile.changePage('paper-tour.html#inputPage');
+
+                var x = data.x + 50, y = (treeHeight - data.y) * 50;
+                var cx = child.x + 50, cy = (treeHeight - child.y) * 50;
+                var p = new Path(new Point(x, y), new Point(cx, y), new Point(cx, cy));
+                p.strokeColor = "red";
+                data.ok = true;
+            }
+        }
+    }
 }
 
-pp(rootNode);
+drawPath(rootNode);
