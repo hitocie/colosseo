@@ -10,7 +10,7 @@ class AuthsController < ApiController
     # auth
     if (not is_login) then
       url = "https://graph.facebook.com/oauth/authorize?client_id="
-      url << FB_APP_ID << "&redirect_uri=" << FB_SITE_PAGE << "&scope=manage_pages,publish_stream,offline_access,manage_pages,create_event"
+      url << FB_APP_ID << "&redirect_uri=" << FB_SITE_PAGE << "&scope=manage_pages,publish_stream,offline_access"
       redirect_to url
     else
       redirect_to MAIN_PAGE

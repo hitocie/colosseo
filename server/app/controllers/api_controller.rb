@@ -2,6 +2,7 @@ class ApiController < ActionController::Base
 
   # constants
   BASE_URL = "http://localhost:3000"
+#  BASE_URL = "http://10.0.2.2:3000"
   MAIN_PAGE = "#{BASE_URL}" #"#{BASE_URL}/main"
 
   FB_SITE_PAGE = "#{BASE_URL}/api/v1/users"
