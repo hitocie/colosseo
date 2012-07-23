@@ -20,9 +20,10 @@ class UsersController < ApiController
     access_token.slice!(0, 13)
     # NOTE: Facebook would have added "&expires=xxxx" param.(April 2012)
     s = access_token.index("&expires=")
-    e = access_token.length
-    access_token.slice!(s, e - s)
-    
+    if s != nil then
+      e = access_token.length
+      access_token.slice!(s, e - s)
+    end  
     logger.info "ACCESS_TOKEN=#{access_token}"
     
     graph = Koala::Facebook::API.new(access_token)
