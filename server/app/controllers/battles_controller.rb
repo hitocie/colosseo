@@ -1,8 +1,5 @@
 class BattlesController < ApiController
 
-  # FIXME: for test
-  skip_before_filter :authenticate
-  
   # index (GET)
   def index
     service = params[:service]

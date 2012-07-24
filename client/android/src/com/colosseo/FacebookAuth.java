@@ -12,41 +12,25 @@ import android.webkit.WebViewClient;
 
 public class FacebookAuth extends Activity {
 
-    static String appId = "342585285818702";
-    static String appSecret = "8552d94ef0a37a6adc9e995cf48efc0e";
-    static String siteUrl = "http://10.0.2.2:3000/api/v1/users";
+	private static String authSiteUrl = "http://10.0.2.2:3000/auths/mobile";
 
-    //private ProgressDialog progressDialog;
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		//progressDialog = new ProgressDialog(this);
-		//progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-		//progressDialog.setMessage("Loading ...");
-		//progressDialog.show();
-		
 		WebView webView = new WebView(this);
 		webView.setWebViewClient(new WebViewClient() {
-
 			@Override
 			public void onPageFinished(WebView view, String url) {
 				super.onPageFinished(view, url);
 				Log.i(getClass().getName(), "Finished page: " + url);
 
-				if (url != null && url.contains(siteUrl + "?code=")) {
-
-					//if (progressDialog != null) {
-					//	progressDialog.dismiss();
-					//	progressDialog = null;
-					//}
-
+				// FIXME: Should contain full url.
+				if (url != null && url.contains("?colosseo=login")) {
+					Log.i(getClass().getName(), "Succeeded to login");
 					Intent intent = getIntent();
-					//String validationCode = url.split("\\?code=")[1];
-					//intent.putExtra("validationCode", validationCode);
 					setResult(Activity.RESULT_OK, intent);
-					finish();
+					finish(); // NOTE: close this Activity.
 				}
 			}
 
@@ -60,12 +44,9 @@ public class FacebookAuth extends Activity {
 		setContentView(webView,
 				new LayoutParams(
 						ViewGroup.LayoutParams.WRAP_CONTENT,
-						ViewGroup.LayoutParams.FILL_PARENT)
-		);
-		webView.loadUrl(
-				"https://graph.facebook.com/oauth/authorize?client_id=" + appId +
-				"&redirect_uri=" + siteUrl + 
-				"&scope=manage_pages,publish_stream,offline_access"
-		);
+						ViewGroup.LayoutParams.WRAP_CONTENT)
+				);
+		// load an authentication page for colosseo.
+		webView.loadUrl(authSiteUrl);
 	}
 }

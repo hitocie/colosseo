@@ -1,11 +1,15 @@
 class ApiController < ActionController::Base
 
   # constants
-  BASE_URL = "http://localhost:3000"
-#  BASE_URL = "http://10.0.2.2:3000"
-  MAIN_PAGE = "#{BASE_URL}" #"#{BASE_URL}/main"
+  WEB_BASE_URL = "http://localhost:3000"
+  MOBILE_BASE_URL = "http://10.0.2.2:3000"
 
-  FB_SITE_PAGE = "#{BASE_URL}/api/v1/users"
+  WEB_MAIN_PAGE = "#{WEB_BASE_URL}" #"#{BASE_URL}/main"
+  MOBILE_MAIN_PAGE = "#{MOBILE_BASE_URL}?colosseo=login"
+
+  WEB_FB_SITE_PAGE = "#{WEB_BASE_URL}/users/web"
+  MOBILE_FB_SITE_PAGE = "#{MOBILE_BASE_URL}/users/mobile"
+
   FB_APP_ID = "342585285818702"
   FB_APP_SECRET = "8552d94ef0a37a6adc9e995cf48efc0e"
 
@@ -17,6 +21,7 @@ class ApiController < ActionController::Base
   # authenticate check  
   before_filter :authenticate
   def authenticate
+    p session[:user]
     if not session[:user] then
       raise "Security Error"
     end

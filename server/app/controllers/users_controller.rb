@@ -1,10 +1,8 @@
 class UsersController < ApiController
 
-  # FIXME: for test
-  #skip_before_filter :authenticate, :only => [:index]
-  skip_before_filter :authenticate
-
-  def index
+  skip_before_filter :authenticate, :only => [:web, :mobile]
+  
+  def _login(is_mobile)
     validate_code = params[:code]
     logger.info "VALIDATE CODE=#{validate_code}"
     
@@ -12,7 +10,12 @@ class UsersController < ApiController
     client = HTTPClient.new
     access_token = client.get(u, :query => {
       :client_id => FB_APP_ID, 
-      :redirect_uri => FB_SITE_PAGE, 
+      :redirect_uri => 
+        if is_mobile then 
+          MOBILE_FB_SITE_PAGE 
+        else
+          WEB_FB_SITE_PAGE
+        end, 
       :client_secret => FB_APP_SECRET, 
       :code => validate_code 
     }).body
@@ -31,8 +34,21 @@ class UsersController < ApiController
     @user = create_user_if_not_exists(me["id"], me["name"], access_token)
     reset_session
     session[:user] = @user
-    
-    redirect_to MAIN_PAGE
+    if is_mobile then
+      redirect_to MOBILE_MAIN_PAGE
+    else
+      redirect_to WEB_MAIN_PAGE
+    end
+  end
+
+  # for web to login
+  def web
+    _login(false)
+  end
+  
+  # for mobile to login
+  def mobile
+    _login(true)
   end
 
   # show (GET + id)
