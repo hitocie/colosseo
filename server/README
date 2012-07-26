@@ -111,3 +111,9 @@ rails g controller battles
 
 # Startup Server
 rails s
+
+--- TODO ---
+- Facebookの戻り値でexpires（秒数）があるが、これで次回authenticateをハンドルすべき。
+ （ セッションを使うべき？ ※session[:expires_at] ）
+- 
+

@@ -21,7 +21,6 @@ class ApiController < ActionController::Base
   # authenticate check  
   before_filter :authenticate
   def authenticate
-    p session[:user]
     if not session[:user] then
       raise "Security Error"
     end

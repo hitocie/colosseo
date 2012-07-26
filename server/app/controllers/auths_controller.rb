@@ -3,6 +3,7 @@ class AuthsController < ApiController
   skip_before_filter :authenticate #, :only => [:index]
 
   def _is_login
+    p session[:user]
     session[:user] ? true : false
   end
   
@@ -15,7 +16,10 @@ class AuthsController < ApiController
           WEB_FB_SITE_PAGE 
         end
       url = "https://graph.facebook.com/oauth/authorize?client_id="
-      url << FB_APP_ID << "&redirect_uri=" << site_page << "&scope=manage_pages,publish_stream,offline_access"
+      url << FB_APP_ID << "&redirect_uri=" << site_page << "&scope=publish_stream"
+      if (is_mobile)
+         url << "&display=wap"
+      end
       redirect_to url
     else
       if is_mobile then
