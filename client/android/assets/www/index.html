@@ -1,0 +1,53 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+	<title>Colosseo</title> 
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="css/jquery.mobile-1.1.1.min.css" />
+	<link rel="stylesheet" href="css/mobiscroll-2.0.1.custom.min.css" />
+    <link rel="stylesheet" href="css/colosseo.css" />
+	<script src="js/cordova-2.0.0.js"></script>
+	<script src="js/jquery-1.7.2.min.js"></script>
+	<script src="js/jquery.mobile-1.1.1.min.js"></script>
+	<script src="js/mobiscroll-2.0.1.custom.min.js"></script>
+    <script src="js/services.js"></script>
+	<script src="js/colosseo.js"></script>
+</head> 
+<body> 
+
+<div data-role="page">
+
+	<div data-role="header">
+		<a href="help.html" data-rel="dialog" data-transition="flip" data-icon="info" class="ui-btn-right" data-theme="d" data-iconpos="notext">ヘルプ</a>
+		<span class="ui-title" />
+	</div>
+	
+	<div data-role="content">
+		<div>
+			<img src="img/colosseo-logo.png" />
+		</div>
+
+		<div>
+			<ul data-role="listview" data-dividertheme="a" data-inset="true">
+				<li data-role="list-divider">現在開催中の競技</li>
+				<li class="li-small"><a href="#">◯◯地区サッカー大会</a></li>
+				<li class="li-small"><a href="#">素人総合格闘技</a></li>
+				<li class="li-small"><a href="#">△△社ゴルフコンペ</a></li>
+				<li class="li-small">その他、多数開催中！</li>
+			</ul>
+		</div>
+		
+		<div>
+			<a href="#" data-role="button" data-theme="b" id="index-login-btn">ログイン</a>
+		</div>
+	</div>
+	
+	<div data-role="footer" data-position="fixed">
+	  <h6><span id="index-copyright">Copyright © Colosseo 2012 All Rights reserved.</span></h6>
+	</div>
+	
+</div>
+
+</body>
+</html>
