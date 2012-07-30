@@ -1,14 +1,12 @@
 class BattlesController < ApiController
 
-  # FIXME: for test
-  skip_before_filter :authenticate
-  
   # index (GET)
   def index
     service = params[:service]
     case service
     when "find_my_battles"
-      conditions = ["battles.user_id = ? OR participants.user_id = ?", 1, 1] # FIXME
+      user_id = session[:user][:id] 
+      conditions = ["battles.user_id = ? OR participants.user_id = ?", user_id, user_id]
       @battles = Battle.find(
         :all,
         :conditions => conditions,
@@ -40,6 +38,11 @@ class BattlesController < ApiController
         :include => [:user, {:participants => [:user]}]
       )
       owner = b.user
+      user_id = session[:user][:id]
+      if owner.id != user_id then
+        raise "You cannot access this battle!" # Not own battle.
+      end
+
       participants = 
         b.participants.collect do |p|
           {
@@ -84,13 +87,12 @@ class BattlesController < ApiController
           :kind => b[:kind],
           :result => b[:result],
           :status => b[:status],
-          :user_id => 1 # FIXME: session[:user][:id] # owner
+          :user_id => session[:user][:id] # owner
         )
         @battle.save!
         
         participants = []
-        # FIXME:
-        # participants << session[:user][:id] # myself
+        participants << session[:user][:id] # myself
         for p in b[:participants] do
           participants << p[:uid]
         end
@@ -124,11 +126,10 @@ class BattlesController < ApiController
   # delete (DELETE)  
   def destroy
     @battle = Battle.find(params[:id])
-    #user_id = session[:user][:id]
-    #if @battle.user_id != user_id then
-    #  # Not own event.  
-    #  raise "You cannot delete this event!"
-    #end
+    user_id = session[:user][:id]
+    if @battle.user_id != user_id then
+      raise "You cannot delete this battle!" # Not own battle.
+    end
     
     case params[:service]
     when "delete_battle"

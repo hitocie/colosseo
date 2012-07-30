@@ -1,8 +1,14 @@
 Colosseo::Application.routes.draw do
   
+  match "auths/web"
+  match "auths/mobile"
+  match "users/web"
+  match "users/mobile"
+
   scope "api/v1" do
-    resources :auths #get "auths/index"
-    resources :users, :battles
+    resources :auths, :only=>[:show]
+    resources :users, :only=>[:show]
+    resources :battles
   end
   
   # The priority is based upon order of creation:

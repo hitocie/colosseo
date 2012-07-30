@@ -1,10 +1,23 @@
 <!DOCTYPE html>
 <head>
+  <link rel="stylesheet" href="http://code.jquery.com/mobile/1.1.1/jquery.mobile-1.1.1.min.css" />
+  <script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+  <script src="http://code.jquery.com/mobile/1.1.1/jquery.mobile-1.1.1.min.js"></script>
   <script type="text/javascript" src="js/paper.js"></script>
   <script type="text/javascript" src="js/tour.js"></script>
   <script type="text/paperscript" src="js/pp.js" canvas="cnvs"></script>
 </head>
 <body>
-  <canvas id="cnvs" resize></canvas>
+  <div data-role='page' id='canvasPage'>
+    <div data-role='content'>
+      <canvas id="cnvs" resize></canvas>
+    </div>
+  </div>
+  
+  <div data-role='page' id='inputPage'>
+    <div data-role='content'>
+      
+    </div>
+  </div>
 </body>
 </html>

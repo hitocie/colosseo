@@ -1,27 +1,50 @@
 class AuthsController < ApiController
 
-  skip_before_filter :authenticate
+  skip_before_filter :authenticate #, :only => [:index]
 
-  def is_login
+  def _is_login
+    p session[:user]
     session[:user] ? true : false
   end
   
-  def index
-    # auth
-    if (not is_login) then
+  def _auth(is_mobile)
+    if (not _is_login) then
+      site_page = 
+        if is_mobile then
+          MOBILE_FB_SITE_PAGE 
+        else 
+          WEB_FB_SITE_PAGE 
+        end
       url = "https://graph.facebook.com/oauth/authorize?client_id="
-      url << FB_APP_ID << "&redirect_uri=" << FB_SITE_PAGE << "&scope=manage_pages,publish_stream,offline_access,manage_pages,create_event"
+      url << FB_APP_ID << "&redirect_uri=" << site_page << "&scope=publish_stream"
+      if (is_mobile)
+         url << "&display=wap"
+      end
       redirect_to url
     else
-      redirect_to MAIN_PAGE
+      if is_mobile then
+        redirect_to MOBILE_MAIN_PAGE
+      else
+        redirect_to WEB_MAIN_PAGE
+      end
     end
+  end
+  
+  # for web to authenticate
+  def web
+    _auth(false)
+  end
+
+  # for mobile to authenticate  
+  def mobile
+    _auth(true)
   end
   
 
   def show
     case params[:service]
     when "is_login"
-      render :json => is_login
+      render :json => _is_login
       
     when "logout"
       reset_session

@@ -51,6 +51,17 @@
 *BattleStatus (enum)
  [10:開催中, 90:終了 ]
 
+
+＜Facebook認証＞
+- Web用
+ http://<hostname>/auths/web
+
+- モバイル用
+ http://<hostname>/auths/mobile
+
+[[注意]] <hostname>は、Facebook Developer Centerの変更が必要。
+
+
 ＜サービス＞
 - boolean is_login(); 
   ログインしているかどうか？
@@ -100,3 +111,9 @@ rails g controller battles
 
 # Startup Server
 rails s
+
+--- TODO ---
+- Facebookの戻り値でexpires（秒数）があるが、これで次回authenticateをハンドルすべき。
+ （ セッションを使うべき？ ※session[:expires_at] ）
+- 
+
