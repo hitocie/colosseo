@@ -1,6 +1,6 @@
-console.log('tour');
 
 cordova.define('tournament', function(require, exports, module) {
+    
     var Node = function( siblingIndex, height, attrs ) {
         this.siblingIndex = siblingIndex;
         this.height = height;
@@ -77,7 +77,7 @@ cordova.define('tournament', function(require, exports, module) {
             node.parent = parentNode;
             parentNodes.push(parentNode);
         }
-        makeTree(allNodes, parentNodes, height + 1);
+        Tournament.makeTree(allNodes, parentNodes, height + 1);
     };
 
     $(document).on('pageinit', '#canvasPage', function() {
@@ -85,7 +85,9 @@ cordova.define('tournament', function(require, exports, module) {
         for (var i = 0; i < 6; i++) {
             leafs.push(new Node(i, 1, {isLeaf: true}));
         }
-        makeTree(allNodes, leafs, 1);
+        Tournament.makeTree(allNodes, leafs, 1);
     });
-    module.exports = Tournament;
+
+    exports.Tournament = Tournament;
+    exports.Node = Node;
 });
