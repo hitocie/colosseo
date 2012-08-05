@@ -1,6 +1,17 @@
+
 paper.install(window);
+
 $(document).on('pageinit', '#tournament-page', function() {
     paper.setup('cnvs');
+    
+    var T = cordova.require('tournament');
+    
+    // test code
+    var allNodes = [], leafs = [];
+    for (var i = 0; i < 6; i++) {
+        leafs.push(new T.Node(i, 1, {isLeaf: true}));
+    }
+    T.Tournament.makeTree(allNodes, leafs, 1);
 
     var rootNode = allNodes[allNodes.length - 1][0];
     var treeHeight = rootNode.y;
@@ -60,7 +71,7 @@ $(document).on('pageinit', '#tournament-page', function() {
                     //     child = data.children[1];
                     // }
                     
-                    $.mobile.changePage('paper-tour.html#inputPage');
+                    $.mobile.changePage('inputresult.html');
 
                     var x = data.x + 50, y = (treeHeight - data.y) * 50;
                     var cx = child.x + 50, cy = (treeHeight - child.y) * 50;
@@ -72,5 +83,5 @@ $(document).on('pageinit', '#tournament-page', function() {
         }
     };
 
-    drawPath(rootNode);
+//    setTimeout(function() { drawPath(rootNode);}, 0);
 });

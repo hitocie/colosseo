@@ -80,14 +80,6 @@ cordova.define('tournament', function(require, exports, module) {
         Tournament.makeTree(allNodes, parentNodes, height + 1);
     };
 
-    $(document).on('pageinit', '#canvasPage', function() {
-        var allNodes = [], leafs = [];
-        for (var i = 0; i < 6; i++) {
-            leafs.push(new Node(i, 1, {isLeaf: true}));
-        }
-        Tournament.makeTree(allNodes, leafs, 1);
-    });
-
     exports.Tournament = Tournament;
     exports.Node = Node;
 });
