@@ -41,75 +41,50 @@ function drawOnStage(container, rootNode) {
         stack = [],
         node;
     var rootY = rootNode.position.actualY,
-        parentX, parentY,
-        childL, childR, childLPos, childRPos, childLX, childRX, childLY, childRY,
-        circle, lineL, lineR;
+        parentX, parentY, childL, childR, childLPos, childRPos, childLX, childRX, childLY, childRY, circle, lineL, lineR;
 
     stack.push(rootNode);
     while (stack.length !== 0) {
         node = stack.pop();
 
-        parentX = node.position.actualX;
-        parentY = Math.abs(node.position.actualY - rootY);
-        circle = new Kinetic.Circle({
-            x: parentX,
-            y: parentY,
-            radius: 10,
-            fill: 'lightgray'
+        node.draw(layer, {
+            rootNode: rootNode
         });
-
-        childL = node.childLeft;
-        childR = node.childRight;
-        if ( childL && childR ) {
-            childLPos = childL.position;
-            childLX = childLPos.actualX;
-            childLY = Math.abs( childLPos.actualY - rootY );
-            lineL = new Kinetic.Line({
-                points: [ childLX, childLY, childLX, parentY, parentX, parentY ],
-                stroke: 'lightgray',
-                strokeWidth: 2
-            });
-
-            childRPos = childR.position;
-            childRX = childRPos.actualX;
-            childRY = Math.abs( childRPos.actualY - rootY ),
-            lineR = new Kinetic.Line({
-                points: [childRX, childRY, childRX, parentY, parentX, parentY],
-                stroke: 'lightgray',
-                strokeWidth: 2
-            });
-
-            layer.add(lineL);
-            layer.add(lineR);
-        }
-
-        layer.add(circle);
-
-        (function(node) {
-            circle.on('mousedown', function() {
-                var childL = node.childLeft,
-                    childR = node.childRight,
-                    participantL, participantR;
-
-                if (childL && childR) {
-                    participantL = childL.participant;
-                    participantR = childR.participant;
-                    
-                    if ( participantL && participantR ) {
-                        var result = confirm();
-                        if ( result ) {
-                            lineR.setStroke('red');
-                            lineR.setStrokeWidth(4);
-                            layer.draw();
-                        }
-                    }
-                }
-                this.setFill('red');
-                layer.draw();
-                $.mobile.changePage('dialog.html');
-            });
-        }(node));
-
+        // node.buildShape( rootNode );
+        // circle = node.circle;
+        // lineL = node.lineL;
+        // lineR = node.lineR;
+        // if ( lineR && lineL ) {
+        //     layer.add(lineL);
+        //     layer.add(lineR);
+        // }
+        // layer.add(circle);
+        //         (function(node) {
+        //             circle.on('mousedown', function() {
+        //                 var childL = node.childLeft,
+        //                     childR = node.childRight,
+        //                     participantL, participantR,
+        //                     lineL, lineR;
+        //                 if (childL && childR) {
+        //                     participantL = childL.participant;
+        //                     participantR = childR.participant;
+        //                     lineL = node.lineL;
+        //                     lineR = node.lineR;
+        //                     if ( participantL && participantR ) {
+        //                         var result = confirm();
+        //                         if ( result ) {
+        //                             lineR.setStroke('red');
+        //                             lineR.setStrokeWidth(4);
+        //                             layer.draw();
+        //                             childL.markLose();
+        //                         }
+        //                     }
+        //                 }
+        //                 this.setFill('red');
+        //                 layer.draw();
+        // //                $.mobile.changePage('dialog.html');
+        //             });
+        //         }(node));
         if (node.childLeft && node.childRight) {
             stack.push(node.childRight);
             stack.push(node.childLeft);
@@ -138,8 +113,120 @@ function Node(args) {
     this.position = args.position;
 }
 
-Node.prototype.bindParticipant = function(user) {
-    this.participant = user;
+Node.prototype = {
+
+    bindParticipant: function(user) {
+        this.participant = user;
+    },
+
+    draw: function(layer, context) {
+        var info = new DrawingInfo(this, context),
+            node = this,
+            handle = info.handle,
+            lineR = info.lineRight, lineL = info.lineLeft;
+
+        info.draw(layer);
+
+        handle.on('mousedown', function() {
+            if ( !node.hasChildren ) return;
+
+            var childL = node.childLeft,
+                childR = node.childRight,
+                participantL = childL.participant,
+                participantR = childR.participant;
+
+            if ( participantL && participantR ) {
+                var result = confirm();
+                if (result) {
+                    lineR.setStroke('red');
+                    lineR.setStrokeWidth(4);
+                    layer.draw();
+
+                    info.markLose();
+                }
+            }
+
+            this.setFill('red');
+            layer.draw();
+            // $.mobile.changePage('dialog.html');
+        });
+    }
+};
+
+Object.defineProperties(Node.prototype, {
+    'hasChildren': {
+        get: function() {
+            return (this.childRight && this.childLeft);
+        }
+    }
+});
+
+
+function DrawingInfo(node, context) {
+    var rootNode = context.rootNode,
+        treeHeight = rootNode.position.actualY;
+
+    this.node = node;
+    this.handle = this._createHandle(node, treeHeight);
+    this.lineLeft = this._createEdge(node.childLeft, treeHeight);
+    this.lineRight = this._createEdge(node.childRight, treeHeight);
+}
+
+DrawingInfo.prototype = {
+
+    _createHandle: function(node, treeHeight) {
+        var pos = node.position,
+            x = pos.actualX,
+            y = Math.abs(pos.actualY - treeHeight),
+            circle;
+
+        return new Kinetic.Circle({
+            x: x,
+            y: y,
+            radius: 10,
+            fill: (node.participant) ? 'red' : 'lightgray'
+        });
+    },
+
+    _createEdge: function(node, treeHeight) {
+        if (!node) return;
+
+        var handle = this.handle,
+            handleX = handle.getX(),
+            handleY = handle.getY(),
+            pos = node.position,
+            x = pos.actualX,
+            y = Math.abs(pos.actualY - treeHeight);
+
+        return new Kinetic.Line({
+            points: [x, y, x, handleY, handleX, handleY],
+            stroke: 'lightgray',
+            strokeWidth: 2
+        });
+    },
+
+    draw: function(layer) {
+        if (this.lineRight) {
+            layer.add(this.lineRight);
+        }
+        if (this.lineLeft) {
+            layer.add(this.lineLeft);
+        }
+        layer.add(this.handle);
+    },
+
+    markLose: function() {
+        var lineR = this.lineRight,
+            lineL = this.lineLeft;
+        this.handle.setFill('black');
+
+        if (!lineR || !lineL) return;
+
+        [lineR, lineL].forEach(function(line) {
+            line.setStroke('black');
+            line.setStrokeWidth(2);
+        });
+    }
 };
 
 function Position(x, y) {
@@ -163,12 +250,11 @@ Object.defineProperty(Position.prototype, 'actualY', {
     }
 });
 
-
 function Tree(participants) {
     var leafs = [],
         participantsLen = participants.length,
         leaf;
-    console.log(participantsLen);
+
     for (var i = 0; i < participantsLen; i++) {
         leaf = new Node({
             position: new Position(i, 0)
