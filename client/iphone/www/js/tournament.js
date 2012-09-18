@@ -144,6 +144,11 @@ Node.prototype = {
                 this.markLose( i );
             }
         }
+        var info = this.info,
+            topEdge = info.topEdge;
+        if ( topEdge ) {
+
+        }
     },
 
     markWin: function( index ) {
@@ -180,19 +185,23 @@ function DrawingInfo(node, context) {
         lines = [];
 
     this.node = node;
-    this.handle = this._createHandle(node, treeHeight);
+    this.handle = this._createHandle(node, rootNode/*treeHeight*/);
     for (var i = 0, len = children.length; i < len; i++) {
-        lines.push( this._createEdge(children[i], treeHeight) );
+        lines.push( this._createEdge(children[i], rootNode/*treeHeight*/) );
+    }
+    if ( node === rootNode ) {
+        this.topLine = this._createTopEdge( node );
     }
     this.lines = lines;
 }
 
 DrawingInfo.prototype = {
 
-    _createHandle: function(node, treeHeight) {
+    _createHandle: function( node, treeHeight ) {
         var pos = node.position,
             x = pos.actualX,
-            y = Math.abs(pos.actualY - treeHeight),
+            // y = Math.abs(pos.actualY - treeHeight),
+            y = pos.getHeight( treeHeight ),
             circle;
 
         return new Kinetic.Circle({
@@ -211,10 +220,22 @@ DrawingInfo.prototype = {
             handleY = handle.getY(),
             pos = node.position,
             x = pos.actualX,
-            y = Math.abs(pos.actualY - treeHeight);
+//            y = Math.abs(pos.actualY - treeHeight);
+            y = pos.getHeight( treeHeight );
 
         return new Kinetic.Line({
             points: [x, y, x, handleY, handleX, handleY],
+            stroke: 'gray',
+            strokeWidth: 2
+        });
+    },
+
+    _createTopEdge: function( rootNode, treeHeight ) {
+        var x = rootNode.position.actualX,
+            y = rootNode.position.actualY;
+        console.log('y:' + y);
+        return new Kinetic.Line({
+            points: [ x, y - 50, x, 50 ],
             stroke: 'gray',
             strokeWidth: 2
         });
@@ -224,6 +245,9 @@ DrawingInfo.prototype = {
         var lines = this.lines, len = lines.length, i;
         for (i = 0; i < len; i++) {
             layer.add(lines[i]);
+        }
+        if ( this.topLine ) {
+            layer.add(this.topLine);
         }
         layer.add(this.handle);
     },
@@ -275,6 +299,14 @@ Object.defineProperty(Position.prototype, 'actualY', {
         return this.y * Position.ySpacing;
     }
 });
+
+Position.prototype.getHeight = function( base ) {
+    var k = Math.abs( this.y - base.position.y );
+    console.log( k * Position.ySpacing );
+    var foo =  k * Position.ySpacing + 100;
+    console.log(foo);
+    return foo;
+};
 
 function Tree( participants ) {
     var leafs = [],
