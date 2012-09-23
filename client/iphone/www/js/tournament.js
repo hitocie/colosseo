@@ -1,28 +1,30 @@
+
+
 var LAST_PARITCIPANTS_KEY = 'last_participants_key';
 var tournamentContext = {};
 
-(function() {
-    var arr = [];
-    for (var i = 0; i < 7; i++) {
-        arr.push({
-            uid: i
-        });
-    }
-    window.localStorage.setItem(LAST_PARITCIPANTS_KEY, JSON.stringify(arr));
-}());
+// FOR DEBUG
+// (function() {
+//     var arr = [];
+//     for (var i = 0; i < 7; i++) {
+//         arr.push({
+//             uid: i
+//         });
+//     }
+//     window.localStorage.setItem(LAST_PARITCIPANTS_KEY, JSON.stringify(arr));
+// }());
 
 
-$(document).on('pageinit', '#tour', function() {
-    console.log('pageinit');
+function initTournament( battle ) {
     // get participants.
-    var participants = window.localStorage[LAST_PARITCIPANTS_KEY];
-    if (participants) {
+    var participants = battle.participants;
+    if ( participants ) {
         var tree = new Tree(JSON.parse(participants));
         drawOnStage('container', tree.rootNode);
     }
-    window.localStorage.clear();
-})
-.on('pageshow', '#tour', function() {
+}
+
+$( document ).on('pageshow', '#tournament-page', function() {
     var currentNode = tournamentContext.currentNode,
         winnerId = tournamentContext.winnerId;
 
