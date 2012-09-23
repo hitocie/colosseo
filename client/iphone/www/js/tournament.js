@@ -33,13 +33,14 @@ $( document ).on('pageshow', '#tournament-page', function() {
     }
 });
 
-$(document).on('pageinit', '#dia', function() {
-    alert('kita:' + glo[0].uid);
-    $('#btn').on('click', function() {
-        glo = glo[0].uid;
-        $.mobile.changePage('kinetic.html');
-    });
-});
+// FOR DEBUG
+// $(document).on('pageinit', '#dia', function() {
+//     alert('kita:' + glo[0].uid);
+//     $('#btn').on('click', function() {
+//         glo = glo[0].uid;
+//         $.mobile.changePage('kinetic.html');
+//     });
+// });
 
 function BattleManager() {
 
