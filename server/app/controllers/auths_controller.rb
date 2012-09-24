@@ -17,9 +17,9 @@ class AuthsController < ApiController
         end
       url = "https://graph.facebook.com/oauth/authorize?client_id="
       url << FB_APP_ID << "&redirect_uri=" << site_page << "&scope=publish_stream"
-      if (is_mobile)
-         url << "&display=wap"
-      end
+#      if (is_mobile)
+#         url << "&display=wap"
+#      end
       redirect_to url
     else
       if is_mobile then

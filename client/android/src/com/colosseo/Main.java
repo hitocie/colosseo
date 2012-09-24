@@ -20,7 +20,7 @@ public class Main extends DroidGap {
 		
 		if (intent == null) 
 			return;
-		super.loadUrl("file:///android_asset/www/main.html");
+		super.loadUrl("file:///android_asset/www/index.html");
 	}
 }
 

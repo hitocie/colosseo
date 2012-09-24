@@ -19,7 +19,8 @@ $(function() {
    * Home.
    */
   // before showing main page
-  $(document).delegate("#main-page", 'pageinit', function() {
+//  $(document).delegate("#main-page", 'pageinit', function() {
+  $(document).delegate("#main-page", 'pagebeforecreate', function() {
                        _show_battle_info_list();
                        });
   
@@ -165,7 +166,6 @@ function _show_battle_info_list() {
                     $(".b-link").click(function() {
                                        window.localStorage.setItem(CURRENT_BATTLE_KEY, (this.id).replace(/battle_/, ""));
                                        });
-                    
     });
 
 }
