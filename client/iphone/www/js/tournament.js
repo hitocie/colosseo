@@ -1,19 +1,35 @@
 
+function drawBattle( battle ) {
 
-var LAST_PARITCIPANTS_KEY = 'last_participants_key';
 var tournamentContext = {};
 
-// FOR DEBUG
-// (function() {
-//     var arr = [];
-//     for (var i = 0; i < 7; i++) {
-//         arr.push({
-//             uid: i
-//         });
-//     }
-//     window.localStorage.setItem(LAST_PARITCIPANTS_KEY, JSON.stringify(arr));
-// }());
+function Observer() {
 
+}
+Observer.prototype.handleMessage = function( data, sender ) {
+    
+};
+
+function Subject() {
+    this.Observers = [];
+}
+Subject.prototype = {
+    
+    addObserver: function( o ) {
+        this.Observers.push( o );
+    },
+
+    notifyObservers: function( data ) {
+        var observers = this.observers,
+            observersLen = observers.length,
+            observer, i;
+        for (i = 0; i < observersLen; i++) {
+            observer = observers[ i ];
+            observer.handleMessage( data, this );
+        }
+    }
+
+};
 
 function initTournament( battle ) {
     // get participants.
@@ -33,22 +49,6 @@ $( document ).on('pageshow', '#tournament-page', function() {
     }
 });
 
-// FOR DEBUG
-// $(document).on('pageinit', '#dia', function() {
-//     alert('kita:' + glo[0].uid);
-//     $('#btn').on('click', function() {
-//         glo = glo[0].uid;
-//         $.mobile.changePage('kinetic.html');
-//     });
-// });
-
-function BattleManager() {
-
-}
-
-BattleManager.prototype.add = function() {
-
-};
 
 function drawOnStage(container, rootNode) {
     var stage = new Kinetic.Stage({
@@ -364,3 +364,5 @@ Tree.prototype = {
     }
 
 };
+
+}
