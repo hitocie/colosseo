@@ -3,41 +3,9 @@ function drawBattle( battle ) {
 
 var tournamentContext = {};
 
-function Observer() {
-
-}
-Observer.prototype.handleMessage = function( data, sender ) {
-    
-};
-
-function Subject() {
-    this.Observers = [];
-}
-Subject.prototype = {
-    
-    addObserver: function( o ) {
-        this.Observers.push( o );
-    },
-
-    notifyObservers: function( data ) {
-        var observers = this.observers,
-            observersLen = observers.length,
-            observer, i;
-        for (i = 0; i < observersLen; i++) {
-            observer = observers[ i ];
-            observer.handleMessage( data, this );
-        }
-    }
-
-};
-
 function initTournament( battle ) {
-    // get participants.
-    var participants = battle.participants;
-    if ( participants ) {
-        var tree = new Tree(JSON.parse(participants));
-        drawOnStage('container', tree.rootNode);
-    }
+    var tree = new Tree( battle );
+    drawOnStage('container', tree.rootNode);
 }
 
 $( document ).on('pageshow', '#tournament-page', function() {
@@ -79,6 +47,47 @@ function drawOnStage(container, rootNode) {
     stage.add(layer);
 }
 
+
+//
+// Observer
+//
+function Observer() {
+}
+
+Observer.prototype.handleMessage = function( data, sender ) {
+};
+
+
+//
+// Subject
+//
+function Subject() {
+    this.Observers = [];
+}
+
+Subject.prototype = {
+    
+    addObserver: function( o ) {
+        this.Observers.push( o );
+    },
+
+    notifyObservers: function( data ) {
+        var observers = this.observers,
+            observersLen = observers.length,
+            observer, i;
+        for (i = 0; i < observersLen; i++) {
+            observer = observers[ i ];
+            observer.handleMessage( data, this );
+        }
+    }
+
+};
+
+
+
+//
+// Node
+//
 function Node(args) {
     var children = args.children || [],
         childrenLen = children.length;
@@ -96,79 +105,78 @@ function Node(args) {
         }
     }
 }
-Node.prototype = {
 
-    bindParticipant: function(user) {
-        this.participant = user;
-    },
+Node.prototype = Object.create(new Subject());
 
-    draw: function(layer, context) {
-        var info = new DrawingInfo(this, context),
-            node = this,
-            handle = info.handle;
+Node.prototype.bindParticipant = function(user) {
+    this.participant = user;
+};
 
-        this.info = info;
-        info.draw(layer);
+Node.prototype.draw = function(layer, context) {
+    var info = new DrawingInfo(this, context),
+        node = this,
+        handle = info.handle;
 
-        handle.on('mousedown touchstart', function() {
-            if ( !node.hasChildren ) return;
+    this.info = info;
+    info.draw(layer);
 
-            var children = node.children, participants = [], p;
-            for (var i = 0, len = children.length; i < len; i++) {
-                p = children[i].participant;
-                if ( !p ) {
-                    break;
-                }
-                participants.push(p);
-            }
+    handle.on('mousedown touchstart', function() {
+        if ( !node.hasChildren ) return;
 
-            if ( participants.length !== 2 ) return;
-
-            tournamentContext.participants = participants;
-            tournamentContext.currentNode = node;
-
-            // node.markWin(1);
-            // node.markLose(0);
-            node.result(node.children[0].participant.uid);
-            layer.draw();
-            // $.mobile.changePage('dialog.html');
-        });
-    },
-
-    result: function( id ) {
-        var children = this.children, p, found = false;
+        var children = node.children, participants = [], p;
         for (var i = 0, len = children.length; i < len; i++) {
             p = children[i].participant;
-            if ( !p ) break;
-
-            if ( p.uid === id ) {
-                this.markWin( i );
-            } else {
-                this.markLose( i );
+            if ( !p ) {
+                break;
             }
+            participants.push(p);
         }
-        var info = this.info,
-            topEdge = info.topEdge;
-        if ( topEdge ) {
 
+        if ( participants.length !== 2 ) return;
+
+        tournamentContext.participants = participants;
+        tournamentContext.currentNode = node;
+
+        // node.markWin(1);
+        // node.markLose(0);
+        node.result(node.children[0].participant.uid);
+        layer.draw();
+        // $.mobile.changePage('dialog.html');
+    });
+};
+
+Node.prototype.result = function( id ) {
+    var children = this.children, p, found = false;
+    for (var i = 0, len = children.length; i < len; i++) {
+        p = children[i].participant;
+        if ( !p ) break;
+
+        if ( p.uid === id ) {
+            this.markWin( i );
+        } else {
+            this.markLose( i );
         }
-    },
-
-    markWin: function( index ) {
-        var child = this.children[ index ],
-            info = this.info;
-        
-        info.markWin( index );
-        this.bindParticipant( child.participant );
-    },
-
-    markLose: function( index ) {
-        var child = this.children[ index ],
-            info = this.info;
-        
-        info.markLose( index );
     }
+    var info = this.info,
+        topEdge = info.topEdge;
+    if ( topEdge ) {
 
+    }
+};
+
+Node.prototype.markWin = function( index ) {
+    var child = this.children[ index ],
+        info = this.info;
+    
+    info.markWin( index );
+    this.bindParticipant( child.participant );
+};
+
+Node.prototype.markLose = function( index ) {
+    var child = this.children[ index ],
+        info = this.info;
+    
+    info.markLose( index );
 };
 
 Object.defineProperties(Node.prototype, {
@@ -181,6 +189,9 @@ Object.defineProperties(Node.prototype, {
 });
 
 
+//
+// DrawingInfo
+//
 function DrawingInfo(node, context) {
     var rootNode = context.rootNode,
         treeHeight = rootNode.position.actualY,
@@ -282,6 +293,10 @@ DrawingInfo.prototype = {
     }
 };
 
+
+//
+// Position
+//
 function Position(x, y) {
     this.x = x;
     this.y = y;
@@ -311,8 +326,13 @@ Position.prototype.getHeight = function( base ) {
     return foo;
 };
 
-function Tree( participants ) {
-    var leafs = [],
+
+//
+// Tree
+//
+function Tree( battle ) {
+    var participants = battle.participants,
+        leafs = [],
         participantsLen = participants.length,
         leaf;
 
@@ -327,42 +347,56 @@ function Tree( participants ) {
     this.rootNode = this.constructToRoot(leafs);
     this.leafs = leafs;
     this.height = this.rootNode.position.actualY;
+    this.currentNode = null;
+    this.allBattles = [];
 }
-Tree.prototype = {
 
-    constructToRoot: function(nodes) {
-        if (nodes.length === 1) {
-            return nodes[0];
-        }
+Tree.prototype = Object.create(new Observer());
 
-        var parents = [],
-            currentNode, nextNode, p, x, y;
-        for (var i = 0, len = nodes.length; i < len; i = i + 2) {
-            currentNode = nodes[i], nextNode = nodes[i + 1];
+Tree.prototype.findBattle = function( playerId1, playerId2 ) {
+    var allBattle = this.allBattle,
+        i, player1, player2;
+    for (i = 0; i < hoge; i++) {
 
-            if (!nextNode) {
-                parents.push(currentNode);
-                continue;
-            }
+    }
+};
 
-            x = (currentNode.position.x + nextNode.position.x) / 2;
-            y = Math.max(currentNode.position.y, nextNode.position.y) + 1;
-
-            p = new Node({
-                children: [currentNode, nextNode],
-                position: new Position(x, y)
-            });
-            parents.push(p);
-        }
-        parents.reverse();
-
-        return this.constructToRoot(parents);
-    },
-
-    applyBattlesResult: function(battleManager) {
-        this.battleManager = battleManager;
+Tree.prototype.constructToRoot = function(nodes) {
+    if (nodes.length === 1) {
+        return nodes[0];
     }
 
+    var parents = [],
+        currentNode, nextNode, p, x, y;
+    for (var i = 0, len = nodes.length; i < len; i = i + 2) {
+        currentNode = nodes[i], nextNode = nodes[i + 1];
+
+        if (!nextNode) {
+            parents.push(currentNode);
+            continue;
+        }
+
+        x = (currentNode.position.x + nextNode.position.x) / 2;
+        y = Math.max(currentNode.position.y, nextNode.position.y) + 1;
+
+        p = new Node({
+            children: [currentNode, nextNode],
+            position: new Position(x, y)
+        });
+        parents.push(p);
+    }
+    parents.reverse();
+
+    return this.constructToRoot(parents);
+};
+
+Tree.prototype.handleMessage = function( data, sender) {
+    if (typeof data === 'undefined' ) return;
+
+    var currentNode = data.currentNode;
+    if ( currentNode ) {
+        this.currentNode = currentNode;
+    }
 };
 
 }
