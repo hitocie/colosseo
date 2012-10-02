@@ -331,11 +331,21 @@ Position.prototype.getHeight = function( base ) {
 // Tree
 //
 function Tree( battle ) {
-    var participants = battle.participants,
-        leafs = [],
-        participantsLen = participants.length,
-        leaf;
+    this.leafs = this.createLeafs( battle.participants );
+    this.rootNode = this.constructToRoot(leafs);
+    this.height = this.rootNode.position.actualY;
+    this.currentNode = null;
+    this.allBattles = [];
+}
 
+Tree.prototype = Object.create(new Observer());
+
+Tree.prototype.createLeafs = function( participants ) {
+    if ( !Array.isArray(participants) || participants.length === 0 ) return;
+    var participantsLen = participants.length,
+        leafs = [],
+        leaf;
+    
     for (var i = 0; i < participantsLen; i++) {
         leaf = new Node({
             position: new Position(i, 0)
@@ -343,15 +353,8 @@ function Tree( battle ) {
         leaf.bindParticipant(participants[i]);
         leafs.push(leaf);
     }
-
-    this.rootNode = this.constructToRoot(leafs);
-    this.leafs = leafs;
-    this.height = this.rootNode.position.actualY;
-    this.currentNode = null;
-    this.allBattles = [];
-}
-
-Tree.prototype = Object.create(new Observer());
+    return leafs;
+};
 
 Tree.prototype.findBattle = function( playerId1, playerId2 ) {
     var allBattle = this.allBattle,
