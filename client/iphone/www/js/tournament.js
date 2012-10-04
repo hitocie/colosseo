@@ -331,11 +331,13 @@ Position.prototype.getHeight = function( base ) {
 // Tree
 //
 function Tree( battle ) {
-    this.leafs = this.createLeafs( battle.participants );
-    this.rootNode = this.constructToRoot(leafs);
+    var leafs = this.createLeafs( battle.participants ),
+        allMatches = [];
+    this.rootNode = this.constructToRoot( leafs, allMatches );
     this.height = this.rootNode.position.actualY;
+    this.leafs = leafs;
+    this.allMatches = allMatches;
     this.currentNode = null;
-    this.allBattles = [];
 }
 
 Tree.prototype = Object.create(new Observer());
@@ -356,15 +358,7 @@ Tree.prototype.createLeafs = function( participants ) {
     return leafs;
 };
 
-Tree.prototype.findBattle = function( playerId1, playerId2 ) {
-    var allBattle = this.allBattle,
-        i, player1, player2;
-    for (i = 0; i < hoge; i++) {
-
-    }
-};
-
-Tree.prototype.constructToRoot = function(nodes) {
+Tree.prototype.constructToRoot = function( nodes, allMatches ) {
     if (nodes.length === 1) {
         return nodes[0];
     }
@@ -374,8 +368,8 @@ Tree.prototype.constructToRoot = function(nodes) {
     for (var i = 0, len = nodes.length; i < len; i = i + 2) {
         currentNode = nodes[i], nextNode = nodes[i + 1];
 
-        if (!nextNode) {
-            parents.push(currentNode);
+        if ( !nextNode ) {
+            parents.push( currentNode );
             continue;
         }
 
@@ -389,9 +383,18 @@ Tree.prototype.constructToRoot = function(nodes) {
         parents.push(p);
     }
     parents.reverse();
-
-    return this.constructToRoot(parents);
+    allMatches.concat( parents );
+    
+    return this.constructToRoot( parents, allMatches );
 };
+
+Tree.prototype.findBattle = function( playerId1, playerId2 ) {
+    var allMatches = this.allMatches, player1, player2;
+    for (var i = 0, len = allMatches.length; i < len; i++) {
+        
+    }
+};
+
 
 Tree.prototype.handleMessage = function( data, sender) {
     if (typeof data === 'undefined' ) return;
