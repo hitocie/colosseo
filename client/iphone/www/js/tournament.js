@@ -388,10 +388,22 @@ Tree.prototype.constructToRoot = function( nodes, allMatches ) {
     return this.constructToRoot( parents, allMatches );
 };
 
-Tree.prototype.findBattle = function( playerId1, playerId2 ) {
-    var allMatches = this.allMatches, player1, player2;
+Tree.prototype.findBattle = function( players ) {
+    var allMatches = this.allMatches, match;
     for (var i = 0, len = allMatches.length; i < len; i++) {
-        
+        match = allMatches[i];
+        var children = match.children, foundAll = true, found = false;
+        for (var j, playersLen = players.length; j < len; j++ ) {
+            found = false;
+            for (var k, childrenLen = children.length; k < len; k++ ) {
+                found = found || ( players[j] === children[k] );
+            }
+            foundAll = (foundAll && found);
+        }
+
+        if ( foundAll ) {
+            return match;
+        }
     }
 };
 
